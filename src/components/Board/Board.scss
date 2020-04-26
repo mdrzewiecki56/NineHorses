@@ -1,34 +1,37 @@
-.Board{
-    height: 100vh;
-    width: 50vw;
-    margin: 5rem auto;
-    .row{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
+.Board {
+  height: 100vh;
+  width: 60vw;
+  margin: 2rem auto;
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 
-        .Field{
-            width:50px;
-            height: 50px;
-        }
+    .Field {
+      width: 70px;
+      height: 70px;
     }
+  }
 
-    .row:nth-child(odd){
-        .Field:nth-child(odd){
-            background: chocolate;
-        }
-        .Field:nth-child(even){
-            background: rgb(255, 174, 116);
-        }
+  .row:nth-child(odd) {
+    .Field:nth-child(odd) {
+      background: chocolate;
     }
+    .Field:nth-child(even) {
+      background: rgb(255, 174, 116);
+    }
+  }
 
-    .row:nth-child(even){
-        .Field:nth-child(even){
-            background: chocolate;
-        }
-        .Field:nth-child(odd){
-            background: rgb(255, 174, 116);
-        }
+  .row:nth-child(even) {
+    .Field:nth-child(even) {
+      background: chocolate;
     }
+    .Field:nth-child(odd) {
+      background: rgb(255, 174, 116);
+    }
+  }
+
+  .CenterField {
+    border: 1.5px solid black;
+  }
 }
-
