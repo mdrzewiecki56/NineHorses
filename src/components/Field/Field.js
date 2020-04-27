@@ -1,13 +1,12 @@
 import React from 'react';
+import './Field.scss';
 
 export default function Field(props) {
   return (
     <div
-      className={
-        'Field ' + (props.row === 4 && props.column === 4 ? 'CenterField' : '')
-      }
+      className={`Field ${props.isCenter ? 'center' : ''}`}
     >
-      {props.row}:{props.column}
+      {props.Horse && <div className={props.classList}>Horse</div>}
     </div>
   );
 }
