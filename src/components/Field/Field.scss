@@ -1,7 +1,21 @@
-.horse.white{
-    color: white;
-}
+.Field{
+    display: flex;
+    justify-content: center;
+    vertical-align: center;
+    .horse {
+        display: flex;
+        justify-content: center;
+        vertical-align: center;
+        &.white{
+            color: white;
+        }
 
-.horse.black{
-    color: black;
+        &.black{
+            color: black;
+        }
+        
+        .pawn{
+            width:70%;
+        }
+    }
 }
