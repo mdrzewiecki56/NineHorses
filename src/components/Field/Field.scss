@@ -1,21 +1,22 @@
-.Field{
+.Field {
+  display: flex;
+  justify-content: center;
+  vertical-align: center;
+  .horse {
     display: flex;
     justify-content: center;
     vertical-align: center;
-    .horse {
-        display: flex;
-        justify-content: center;
-        vertical-align: center;
-        &.white{
-            color: white;
-        }
 
-        &.black{
-            color: black;
-        }
-        
-        .pawn{
-            width:70%;
-        }
+    &.white {
+      color: white;
     }
+
+    &.black {
+      color: black;
+    }
+
+    .pawn {
+      width: 70%;
+    }
+  }
 }
