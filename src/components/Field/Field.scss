@@ -1,7 +1,13 @@
-.horse.white{
-    color: white;
+.horse.white {
+  margin-top: 10px;
+  margin-left: 10px;
+  content: url(../../images/kwhite.svg);
+  transform: scale(1.3);
 }
 
-.horse.black{
-    color: black;
+.horse.black {
+  margin-top: 10px;
+  margin-left: 10px;
+  content: url(../../images/kblack.svg);
+  transform: scale(1.3);
 }
