@@ -48,11 +48,15 @@ function Board(props) {
     for (let l = 0; l < i; l++) {
       for (let m = 0; m < j; m++) {
         let classList;
+        let id=`${l}:${m}`;
         let isHorsePresent = horsePositions.find(
           (horse) => horse.i === l && horse.j === m
         );
         if (isHorsePresent) {
           classList = isHorsePresent.getClassList();
+        }
+        if(id === selectedField) {
+          classList += " selected";
         }
         if (
           l === Math.ceil((size - 1) / 2) &&
@@ -62,8 +66,8 @@ function Board(props) {
             <Field
               row={l}
               column={m}
-              key={`${l}:${m}`}
-              id={`${l}:${m}`}
+              key={id}
+              id={id}
               isCenter={true}
               Horse={isHorsePresent}
               classList={classList}
@@ -75,8 +79,8 @@ function Board(props) {
             <Field
               row={l}
               column={m}
-              key={`${l}:${m}`}
-              id={`${l}:${m}`}
+              key={id}
+              id={id}
               isCenter={false}
               Horse={isHorsePresent}
               classList={classList}
