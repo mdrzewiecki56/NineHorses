@@ -2,16 +2,12 @@ import React from 'react';
 import './Field.scss';
 
 export default function Field(props) {
-
   return (
-    <div 
+    <div
       className={`Field ${props.isCenter ? 'center' : ''}`}
-      onClick={() => props.select(props.id)}
+      onClick={() => props.select(props.id, props.Horse.mode)}
     >
-      {props.Horse && (
-        <div className={props.classList}>
-        </div>
-      )}
+      {props.Horse && <div className={props.classList}></div>}
     </div>
   );
 }
