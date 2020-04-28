@@ -1,5 +1,5 @@
 import React from 'react';
-import Horse from '../Horse';
+import Horse from '../Horse/Horse';
 import './Field.scss';
 import white from '../images/white.svg';
 import black from '../images/black.svg';

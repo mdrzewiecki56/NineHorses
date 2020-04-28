@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Field from '../Field/Field';
 import { chunkArray } from '../../Helper';
-import Horse from '../Horse';
+import Horse from '../Horse/Horse';
 import './Board.scss';
 
 const CUR_PLAYER_W = 0;
