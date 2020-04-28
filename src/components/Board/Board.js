@@ -24,7 +24,9 @@ function Board(props) {
   // Field from which player wants to make a move
   const [selectedField, setSelectedField] = useState(null);
   // Field from which player wants to make a move
-  const [horsePositions, setHorsePositions] = useState(Horse.getInitialHorsesPositions(size));
+  const [horsePositions, setHorsePositions] = useState(
+    Horse.getInitialHorsesPositions(size)
+  );
 
   //BOARD CREATION
   let dimension = size * size;
@@ -41,30 +43,52 @@ function Board(props) {
     for (let l = 0; l < i; l++) {
       for (let m = 0; m < j; m++) {
         let classList;
-        let isHorsePresent = horsePositions.find(horse => horse.i=== l && horse.j === m);
-        if (isHorsePresent) {classList = isHorsePresent.getClassList();}
-        if(l === Math.ceil((size-1)/2) && m=== Math.ceil((size-1)/2) ){
-          fields.push(<Field row={l} column={m} key={`${l}:${m}`} isCenter={true} Horse={isHorsePresent} classList={classList}/>);
+        let isHorsePresent = horsePositions.find(
+          (horse) => horse.i === l && horse.j === m
+        );
+        if (isHorsePresent) {
+          classList = isHorsePresent.getClassList();
+        }
+        if (
+          l === Math.ceil((size - 1) / 2) &&
+          m === Math.ceil((size - 1) / 2)
+        ) {
+          fields.push(
+            <Field
+              row={l}
+              column={m}
+              key={`${l}:${m}`}
+              isCenter={true}
+              Horse={isHorsePresent}
+              classList={classList}
+            />
+          );
         } else {
-          fields.push(<Field row={l} column={m} key={`${l}:${m}`} isCenter={false} Horse={isHorsePresent} classList={classList}/>);
-        }   
+          fields.push(
+            <Field
+              row={l}
+              column={m}
+              key={`${l}:${m}`}
+              isCenter={false}
+              Horse={isHorsePresent}
+              classList={classList}
+            />
+          );
+        }
       }
     }
 
     return chunkArray(fields, size);
   };
 
-  useEffect(() => {
-    
-  }, []);
-
+  useEffect(() => {}, []);
 
   let board = createBoard(dimension).map((columns, index) => (
     <div className='row' key={`column${index}`}>
       {columns}
     </div>
   ));
-  console.log(horsePositions);
+
   //RENDERER
   return <div className='Board'>{board}</div>;
 }
