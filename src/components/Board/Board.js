@@ -23,7 +23,8 @@ function Board(props) {
   const [currentPlayer, setCurrentPlayer] = useState(CUR_PLAYER_W);
   // Field from which player wants to make a move
   const [selectedField, setSelectedField] = useState(null);
-  // Field from which player wants to make a move
+
+  // Horse positions
   const [horsePositions, setHorsePositions] = useState(
     Horse.getInitialHorsesPositions(size)
   );

@@ -1,22 +1,13 @@
-.Field {
-  display: flex;
-  justify-content: center;
-  vertical-align: center;
-  .horse {
-    display: flex;
-    justify-content: center;
-    vertical-align: center;
+.horse.white {
+  margin-top: 10px;
+  margin-left: 10px;
+  content: url(../../images/kwhite.svg);
+  transform: scale(1.3);
+}
 
-    &.white {
-      color: white;
-    }
-
-    &.black {
-      color: black;
-    }
-
-    .pawn {
-      width: 70%;
-    }
-  }
+.horse.black {
+  margin-top: 10px;
+  margin-left: 10px;
+  content: url(../../images/kblack.svg);
+  transform: scale(1.3);
 }
