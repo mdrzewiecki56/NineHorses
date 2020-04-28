@@ -15,19 +15,19 @@
 
   .row:nth-child(odd) {
     .Field:nth-child(odd) {
-      background: chocolate;
+      background: rgb(157, 41, 41);
     }
     .Field:nth-child(even) {
-      background: rgb(255, 174, 116);
+      background: rgb(255, 172, 133);
     }
   }
 
   .row:nth-child(even) {
     .Field:nth-child(even) {
-      background: chocolate;
+      background: rgb(157, 41, 41);
     }
     .Field:nth-child(odd) {
-      background: rgb(255, 174, 116);
+      background: rgb(255, 172, 133);
     }
   }
 
