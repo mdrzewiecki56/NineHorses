@@ -32,7 +32,11 @@ function Board(props) {
   //BOARD CREATION
   let dimension = size * size;
 
-  let createBoard = (dimension) => {
+  const selectField = (id) => {
+    setSelectedField(id);
+  }
+
+  const createBoard = (dimension) => {
     let i, j;
     for (let k = 0; k < dimension; k++) {
       // Calculate Indexes
@@ -59,9 +63,11 @@ function Board(props) {
               row={l}
               column={m}
               key={`${l}:${m}`}
+              id={`${l}:${m}`}
               isCenter={true}
               Horse={isHorsePresent}
               classList={classList}
+              select={selectField}
             />
           );
         } else {
@@ -70,9 +76,11 @@ function Board(props) {
               row={l}
               column={m}
               key={`${l}:${m}`}
+              id={`${l}:${m}`}
               isCenter={false}
               Horse={isHorsePresent}
               classList={classList}
+              select={selectField}
             />
           );
         }
