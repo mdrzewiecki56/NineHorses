@@ -32,7 +32,15 @@ function Board(props) {
   //BOARD CREATION
   let dimension = size * size;
 
-  let createBoard = (dimension) => {
+  const selectField = (id, horseMode) => {
+    if (currentPlayer === horseMode) {
+      setSelectedField(id);
+    } else if (horseMode) {
+      console.log('Not your turn!');
+    }
+  };
+
+  const createBoard = (dimension) => {
     let i, j;
     for (let k = 0; k < dimension; k++) {
       // Calculate Indexes
@@ -44,11 +52,15 @@ function Board(props) {
     for (let l = 0; l < i; l++) {
       for (let m = 0; m < j; m++) {
         let classList;
+        let id = `${l}:${m}`;
         let isHorsePresent = horsePositions.find(
           (horse) => horse.i === l && horse.j === m
         );
         if (isHorsePresent) {
           classList = isHorsePresent.getClassList();
+        }
+        if (id === selectedField) {
+          classList += ' selected';
         }
         if (
           l === Math.ceil((size - 1) / 2) &&
@@ -58,10 +70,12 @@ function Board(props) {
             <Field
               row={l}
               column={m}
-              key={`${l}:${m}`}
+              key={id}
+              id={id}
               isCenter={true}
               Horse={isHorsePresent}
               classList={classList}
+              select={selectField}
             />
           );
         } else {
@@ -69,10 +83,12 @@ function Board(props) {
             <Field
               row={l}
               column={m}
-              key={`${l}:${m}`}
+              key={id}
+              id={id}
               isCenter={false}
               Horse={isHorsePresent}
               classList={classList}
+              select={selectField}
             />
           );
         }
