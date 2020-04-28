@@ -35,7 +35,7 @@ function Board(props) {
   const selectField = (id, horseMode) => {
     if (currentPlayer === horseMode) {
       setSelectedField(id);
-    } else {
+    } else if (horseMode) {
       console.log('Not your turn!');
     }
   };
