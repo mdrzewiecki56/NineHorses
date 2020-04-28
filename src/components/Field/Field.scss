@@ -1,17 +1,25 @@
-.horse.white {
-  margin-top: 10px;
-  margin-left: 10px;
-  content: url(../../images/kwhite.svg);
-  transform: scale(1.3);
-}
+.Field {
+  display: flex;
+  justify-content: center;
+  vertical-align: center;
+  .horse {
+    display: flex;
+    justify-content: center;
+    vertical-align: center;
 
-.horse.black {
-  margin-top: 10px;
-  margin-left: 10px;
-  content: url(../../images/kblack.svg);
-  transform: scale(1.3);
-}
+    &.white {
+      color: white;
+    }
 
-.horse.selected {
-  border: 1.5px solid red;
+    &.black {
+      color: black;
+    }
+
+    &.selected {
+      background-color: rgb(140, 204, 67);
+    }
+    .pawn {
+      width: 70%;
+    }
+  }
 }
