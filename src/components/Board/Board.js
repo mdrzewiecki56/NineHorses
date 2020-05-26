@@ -27,6 +27,8 @@ function Board(props) {
     j: null,
     mode: null
   });
+  // Determines if we have a winner
+  const [winner, setWinner] = useState(null);
 
   // Horse positions
   const [pawnPositions, setPawnPositions] = useState(
@@ -40,7 +42,9 @@ function Board(props) {
     if (pawn) {
       if (currentPlayer === pawn.mode) {
         setSelectedPawn(pawn);
-      } else console.log("Not your turn!");
+      } else {
+        performBeating(position);
+      }
     } else {
       makeMove(position);
     }
@@ -57,14 +61,54 @@ function Board(props) {
           : pawn
       );
       setPawnPositions(newPositions);
+      setSelectedPawn(new Horse(null, null, null));
+      //CHANGE TURN
       if (currentPlayer === CUR_PLAYER_W) {
         setCurrentPlayer(CUR_PLAYER_B);
       } else {
         setCurrentPlayer(CUR_PLAYER_W);
       }
+      //CHECK IF WHITE WON
+      if (
+        !newPositions.find(pawn => pawn.mode === 1) ||
+        newPositions.find(
+          pawn =>
+            pawn.mode === 0 &&
+            pawn.i === Math.ceil((size - 1) / 2) &&
+            pawn.j === Math.ceil((size - 1) / 2)
+        )
+      ) {
+        setWinner(0);
+      }
+      //CHECK IF BLACK WON
+      if (
+        !pawnPositions.find(pawn => pawn.mode === 0) ||
+        pawnPositions.find(
+          pawn =>
+            pawn.mode === 1 &&
+            pawn.i === Math.ceil((size - 1) / 2) &&
+            pawn.j === Math.ceil((size - 1) / 2)
+        )
+      ) {
+        setWinner(1);
+      }
     } else if (selectedPawn) {
       console.log("Not your turn or unproper move Sir");
     }
+  };
+
+  const performBeating = position => {
+    if (
+      !Horse.validateMove({ i: selectedPawn.i, j: selectedPawn.j }, position)
+    ) {
+      return;
+    }
+    const pawnToBeat = pawnPositions.findIndex(
+      pawn => pawn.i === position.i && pawn.j === position.j
+    );
+    pawnPositions.splice(pawnToBeat, 1);
+    setPawnPositions([...pawnPositions]);
+    makeMove(position);
   };
 
   const createBoard = dimension => {
@@ -132,7 +176,13 @@ function Board(props) {
   ));
 
   //RENDERER
-  return <div className="Board">{board}</div>;
+  return (
+    <div className="Board">
+      {board}
+      {winner === 0 && <h1>Player WHITE won!</h1>}
+      {winner === 1 && <h1>Player BLACK won!</h1>}
+    </div>
+  );
 }
 
 export default Board;
