@@ -36,6 +36,19 @@ export default class Horse {
     return val;
   }
 
+  static getMOVES(position) {
+    return [
+      { i: position.i - 2, j: position.j - 1 },
+      { i: position.i - 2, j: position.j + 1 },
+      { i: position.i - 1, j: position.j - 2 },
+      { i: position.i - 1, j: position.j + 2 },
+      { i: position.i, j: position.j - 2 },
+      { i: position.i, j: position.j + 2 },
+      { i: position.i, j: position.j - 1 },
+      { i: position.i, j: position.j + 1 },
+    ];
+  }
+
   static validateMove(from, to) {
     if (from.i === to.i - 2 && from.j === to.j - 1) return true;
     if (from.i === to.i - 2 && from.j === to.j + 1) return true;
@@ -49,7 +62,7 @@ export default class Horse {
   }
 
   getClassList() {
-    return `horse ${this.mode === Horse.HORSE_W ? "white" : "black"}`;
+    return `horse ${this.mode === Horse.HORSE_W ? 'white' : 'black'}`;
   }
 
   getPosition() {
@@ -58,10 +71,10 @@ export default class Horse {
 
   setPosition(_i, _j) {
     if (!_i || !_j) {
-      throw "Invalid position!";
+      throw 'Invalid position!';
     }
     if (_i <= 0 || _j <= 0) {
-      throw "Invalid position!";
+      throw 'Invalid position!';
     }
     this.i = _i;
     this.j = _j;
