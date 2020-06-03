@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import Field from "../Field/Field";
-import { chunkArray } from "../../Helper";
-import Horse from "../../Horse/Horse";
-import "./Board.scss";
+import React, { useState } from 'react';
+import Field from '../Field/Field';
+import { chunkArray } from '../../Helper';
+import Horse from '../../Horse/Horse';
+import './Board.scss';
 
 const CUR_PLAYER_W = 0;
 const CUR_PLAYER_B = 1;
@@ -12,7 +12,7 @@ function Board(props) {
   let size;
   // Board size must be greater than 5 and odd-sized
   if (props.size === undefined || props.size < 5 || props.size % 2 !== 1) {
-    console.log("Invalid board size!!");
+    console.log('Invalid board size!!');
     size = 9;
   } else {
     size = props.size;
@@ -25,7 +25,7 @@ function Board(props) {
   const [selectedPawn, setSelectedPawn] = useState({
     i: null,
     j: null,
-    mode: null
+    mode: null,
   });
   // Determines if we have a winner
   const [winner, setWinner] = useState(null);
@@ -39,6 +39,7 @@ function Board(props) {
   let dimension = size * size;
 
   const selectField = (position, pawn) => {
+    if (winner) return;
     if (pawn) {
       if (currentPlayer === pawn.mode) {
         setSelectedPawn(pawn);
@@ -50,12 +51,13 @@ function Board(props) {
     }
   };
 
-  const makeMove = position => {
+  const makeMove = (position) => {
+    const previousPosition = { i: selectedPawn.i, j: selectedPawn.j };
     if (
       currentPlayer === selectedPawn.mode &&
-      Horse.validateMove({ i: selectedPawn.i, j: selectedPawn.j }, position)
+      Horse.validateMove(previousPosition, position)
     ) {
-      const newPositions = pawnPositions.map(pawn =>
+      const newPositions = pawnPositions.map((pawn) =>
         pawn.i === selectedPawn.i && pawn.j === selectedPawn.j
           ? new Horse(position.i, position.j, currentPlayer)
           : pawn
@@ -70,48 +72,52 @@ function Board(props) {
       }
       //CHECK IF WHITE WON
       if (
-        !newPositions.find(pawn => pawn.mode === 1) ||
-        newPositions.find(
-          pawn =>
-            pawn.mode === 0 &&
-            pawn.i === Math.ceil((size - 1) / 2) &&
-            pawn.j === Math.ceil((size - 1) / 2)
-        )
+        !newPositions.find((pawn) => pawn.mode === 1) ||
+        (previousPosition.i === Math.ceil((size - 1) / 2) &&
+          previousPosition.j === Math.ceil((size - 1) / 2) &&
+          newPositions.find(
+            (pawn) =>
+              pawn.mode === 0 &&
+              pawn.i !== previousPosition.i &&
+              pawn.j !== previousPosition.j
+          ))
       ) {
         setWinner(0);
       }
       //CHECK IF BLACK WON
       if (
-        !pawnPositions.find(pawn => pawn.mode === 0) ||
-        pawnPositions.find(
-          pawn =>
-            pawn.mode === 1 &&
-            pawn.i === Math.ceil((size - 1) / 2) &&
-            pawn.j === Math.ceil((size - 1) / 2)
-        )
+        !newPositions.find((pawn) => pawn.mode === 0) ||
+        (previousPosition.i === Math.ceil((size - 1) / 2) &&
+          previousPosition.j === Math.ceil((size - 1) / 2) &&
+          newPositions.find(
+            (pawn) =>
+              pawn.mode === 1 &&
+              pawn.i !== previousPosition.i &&
+              pawn.j !== previousPosition.j
+          ))
       ) {
         setWinner(1);
       }
     } else if (selectedPawn) {
-      console.log("Not your turn or unproper move Sir");
+      console.log('Not your turn or unproper move Sir');
     }
   };
 
-  const performBeating = position => {
+  const performBeating = (position) => {
     if (
       !Horse.validateMove({ i: selectedPawn.i, j: selectedPawn.j }, position)
     ) {
       return;
     }
     const pawnToBeat = pawnPositions.findIndex(
-      pawn => pawn.i === position.i && pawn.j === position.j
+      (pawn) => pawn.i === position.i && pawn.j === position.j
     );
     pawnPositions.splice(pawnToBeat, 1);
     setPawnPositions([...pawnPositions]);
     makeMove(position);
   };
 
-  const createBoard = dimension => {
+  const createBoard = (dimension) => {
     let i, j;
     for (let k = 0; k < dimension; k++) {
       // Calculate Indexes
@@ -124,12 +130,12 @@ function Board(props) {
       for (let m = 0; m < j; m++) {
         let classList;
         let position = { i: l, j: m };
-        let pawn = pawnPositions.find(pawn => pawn.i === l && pawn.j === m);
+        let pawn = pawnPositions.find((pawn) => pawn.i === l && pawn.j === m);
         if (pawn) {
           classList = pawn.getClassList();
         }
         if (position.i === selectedPawn.i && position.j === selectedPawn.j) {
-          classList += " selected";
+          classList += ' selected';
         }
         if (
           l === Math.ceil((size - 1) / 2) &&
@@ -167,20 +173,29 @@ function Board(props) {
     return chunkArray(Fields, size);
   };
 
-  useEffect(() => {}, []);
-
   let board = createBoard(dimension).map((columns, index) => (
-    <div className="row" key={`column${index}`}>
+    <div className='row' key={`column${index}`}>
       {columns}
     </div>
   ));
 
+  ///AI TURN
+  if (currentPlayer === CUR_PLAYER_B) {
+    //FOR EACH BLACK PAWN GET POSSIBLE FIELDS (Horse.getMOVES(pawnPosition)) THAT IT COULD BE MOVED TO [ARRAY OF {i,j}]
+    //CALCULATE VALUE FOR EVERY POSSIBLE FIELD (AI.calculateValue)
+    //MAKE ALPHA-BETA MINMAX DECISION (AI.makeDecision)
+    //MAKE MOVE TO 'DECIDED' FIELD
+  }
+
   //RENDERER
   return (
-    <div className="Board">
+    <div className='Board'>
       {board}
       {winner === 0 && <h1>Player WHITE won!</h1>}
       {winner === 1 && <h1>Player BLACK won!</h1>}
+      {winner && (
+        <button onClick={() => window.location.reload()}>Reset</button>
+      )}
     </div>
   );
 }
