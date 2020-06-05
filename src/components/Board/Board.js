@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Field from "../Field/Field";
 import { chunkArray } from "../../Helper";
 import Horse from "../../Horse/Horse";
+import AI from "../../AI/AI";
 import "./Board.scss";
 
 const CUR_PLAYER_W = 0;
@@ -187,10 +188,37 @@ function Board(props) {
 
   ///AI TURN
   if (currentPlayer === CUR_PLAYER_B) {
-    //FOR EACH BLACK PAWN GET POSSIBLE FIELDS (Horse.getMOVES(pawnPosition)) THAT IT COULD BE MOVED TO [ARRAY OF {i,j}]
+    //FOR EACH BLACK PAWN GET POSSIBLE FIELDS (Horse.getMOVES(pawnPosition)) THAT PAWN COULD BE MOVED TO [ARRAY OF {i,j}]
+    const possibilities = pawnPositions
+      .filter(pawn => pawn.mode === CUR_PLAYER_B)
+      .map(pawn =>
+        Horse.getMOVES({
+          i: pawn.i,
+          j: pawn.j
+        })
+      )
+      .filter(
+        possibility =>
+          !(
+            possibility.i > size - 1 ||
+            possibility.j > size - 1 ||
+            possibility.i < 0 ||
+            possibility.j < 0
+          )
+      );
+
     //CALCULATE VALUE FOR EVERY POSSIBLE FIELD (AI.calculateValue)
+    const fieldsWithValues = possibilities.map(field => {
+      return {
+        ...field,
+        value: AI.calculateValue(field, pawnPositions)
+      };
+    });
+    console.log(fieldsWithValues);
     //MAKE ALPHA-BETA MINMAX DECISION (AI.makeDecision)
-    //MAKE MOVE TO 'DECIDED' FIELD
+    // const decision = AI.makeDecision(fieldsWithValues);
+    // //MAKE MOVE TO 'DECIDED' FIELD
+    // makeMove(decision);
   }
 
   //RENDERER
