@@ -37,16 +37,25 @@ export default class Horse {
   }
 
   static getMOVES(position) {
-    return [
+    const moves = [
       { i: position.i - 2, j: position.j - 1 },
       { i: position.i - 2, j: position.j + 1 },
       { i: position.i - 1, j: position.j - 2 },
       { i: position.i - 1, j: position.j + 2 },
-      { i: position.i, j: position.j - 2 },
-      { i: position.i, j: position.j + 2 },
-      { i: position.i, j: position.j - 1 },
-      { i: position.i, j: position.j + 1 },
+      { i: position.i + 1, j: position.j - 2 },
+      { i: position.i + 1, j: position.j + 2 },
+      { i: position.i + 2, j: position.j - 1 },
+      { i: position.i + 2, j: position.j + 1 }
     ];
+    return moves.filter(
+      possibility =>
+        !(
+          possibility.i > 9 - 1 ||
+          possibility.j > 9 - 1 ||
+          possibility.i < 0 ||
+          possibility.j < 0
+        )
+    );
   }
 
   static validateMove(from, to) {
@@ -62,7 +71,7 @@ export default class Horse {
   }
 
   getClassList() {
-    return `horse ${this.mode === Horse.HORSE_W ? 'white' : 'black'}`;
+    return `horse ${this.mode === Horse.HORSE_W ? "white" : "black"}`;
   }
 
   getPosition() {
@@ -71,10 +80,10 @@ export default class Horse {
 
   setPosition(_i, _j) {
     if (!_i || !_j) {
-      throw 'Invalid position!';
+      throw "Invalid position!";
     }
     if (_i <= 0 || _j <= 0) {
-      throw 'Invalid position!';
+      throw "Invalid position!";
     }
     this.i = _i;
     this.j = _j;

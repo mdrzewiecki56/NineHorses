@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Field from "../Field/Field";
 import { chunkArray } from "../../Helper";
 import Horse from "../../Horse/Horse";
@@ -186,41 +186,62 @@ function Board(props) {
     </div>
   ));
 
-  ///AI TURN
-  if (currentPlayer === CUR_PLAYER_B) {
+  const AITurn = () => {
     //FOR EACH BLACK PAWN GET POSSIBLE FIELDS (Horse.getMOVES(pawnPosition)) THAT PAWN COULD BE MOVED TO [ARRAY OF {i,j}]
     const possibilities = pawnPositions
       .filter(pawn => pawn.mode === CUR_PLAYER_B)
-      .map(pawn =>
-        Horse.getMOVES({
-          i: pawn.i,
-          j: pawn.j
+      .map(pawn => {
+        return {
+          to: Horse.getMOVES({ i: pawn.i, j: pawn.j }),
+          from: { i: pawn.i, j: pawn.j }
+        };
+      });
+    console.log("possible moves");
+    console.log(possibilities);
+    //CALCULATE VALUE FOR EVERY POSSIBLE FIELD (AI.calculateValue)
+    const fieldsWithValues = possibilities
+      .map(possibility =>
+        possibility.to.map(field => {
+          return {
+            ...field,
+            from: possibility.from,
+            value: AI.calculateValue(field, pawnPositions)
+          };
         })
       )
-      .filter(
-        possibility =>
-          !(
-            possibility.i > size - 1 ||
-            possibility.j > size - 1 ||
-            possibility.i < 0 ||
-            possibility.j < 0
-          )
-      );
-
-    //CALCULATE VALUE FOR EVERY POSSIBLE FIELD (AI.calculateValue)
-    const fieldsWithValues = possibilities.map(field => {
-      return {
-        ...field,
-        value: AI.calculateValue(field, pawnPositions)
-      };
-    });
-    console.log(fieldsWithValues);
+      .flat(1);
+    console.log("field values");
+    console.log(possibilities);
     //MAKE ALPHA-BETA MINMAX DECISION (AI.makeDecision)
-    // const decision = AI.makeDecision(fieldsWithValues);
-    // //MAKE MOVE TO 'DECIDED' FIELD
-    // makeMove(decision);
-  }
+    const decision = AI.makeDecision(fieldsWithValues);
+    setSelectedPawn(new Horse(decision.from.i, decision.from.j, 1));
+    return { i: decision.i, j: decision.j };
+  };
 
+  const [aiMove, setAiMove] = useState(null);
+  useEffect(() => {
+    if (currentPlayer === CUR_PLAYER_B) {
+      const move = AITurn();
+      setAiMove(move);
+    }
+  }, [currentPlayer]);
+
+  useEffect(() => {
+    if (currentPlayer === CUR_PLAYER_B && selectedPawn.i && aiMove) {
+      if (
+        pawnPositions.find(
+          pawn =>
+            pawn.i === aiMove.i &&
+            pawn.j === aiMove.j &&
+            pawn.mode === CUR_PLAYER_W
+        )
+      ) {
+        performBeating(aiMove);
+      } else {
+        makeMove(aiMove);
+      }
+    }
+  }, [selectedPawn, aiMove]);
   //RENDERER
   return (
     <div className="Board">
@@ -235,4 +256,22 @@ function Board(props) {
   );
 }
 
-export default Board;
+export default React.memo(Board, (prev, next) => {
+  if (
+    prev.currentPlayer !== next.currentPlayer ||
+    prev.selectedPawn !== next.selectedPawn
+  )
+    return true;
+  prev.pawnPositions.forEach((position, idx) => {
+    if (
+      !(
+        position.i === next.pawnPositions[idx].i &&
+        position.i === next.pawnPositions[idx].j &&
+        position.mode === next.pawnPositions[idx].mode
+      )
+    ) {
+      return false;
+    }
+  });
+  return true;
+});
