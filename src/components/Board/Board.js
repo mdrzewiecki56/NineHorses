@@ -3,6 +3,7 @@ import Field from "../Field/Field";
 import { chunkArray } from "../../Helper";
 import Horse from "../../Horse/Horse";
 import AI from "../../AI/AI";
+import * as _ from "lodash";
 import "./Board.scss";
 
 const CUR_PLAYER_W = 0;
@@ -196,8 +197,18 @@ function Board(props) {
           from: { i: pawn.i, j: pawn.j }
         };
       });
-    console.log("possible moves");
-    console.log(possibilities);
+
+    const possibilitiesOfPossibilities = possibilities.map(possibility => {
+      return {
+        ...possibility,
+        to: {
+          ...possibility.to,
+          next: possibility.to.map(to => Horse.getMOVES({ i: to.i, j: to.j }))
+        }
+      };
+    });
+
+    console.log(possibilitiesOfPossibilities);
     //CALCULATE VALUE FOR EVERY POSSIBLE FIELD (AI.calculateValue)
     const fieldsWithValues = possibilities
       .map(possibility =>
@@ -210,11 +221,12 @@ function Board(props) {
         })
       )
       .flat(1);
-    console.log("field values");
-    console.log(possibilities);
     //MAKE ALPHA-BETA MINMAX DECISION (AI.makeDecision)
+    console.log(fieldsWithValues);
     const decision = AI.makeDecision(fieldsWithValues);
+    console.log(decision);
     setSelectedPawn(new Horse(decision.from.i, decision.from.j, 1));
+    console.log(_.maxBy(fieldsWithValues, "value"));
     return { i: decision.i, j: decision.j };
   };
 
@@ -227,7 +239,11 @@ function Board(props) {
   }, [currentPlayer]);
 
   useEffect(() => {
-    if (currentPlayer === CUR_PLAYER_B && selectedPawn.i && aiMove) {
+    if (
+      currentPlayer === CUR_PLAYER_B &&
+      (selectedPawn.i || selectedPawn.i === 0) &&
+      aiMove
+    ) {
       if (
         pawnPositions.find(
           pawn =>

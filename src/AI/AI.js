@@ -9,15 +9,16 @@ export default class AI {
           position.j === field.j &&
           position.mode === 1
       )
-    )
+    ) {
       return 0;
+    }
     //IF IM ON CENTER THEN MOST IMPORTANT TO LEAVE
     if (
       pawnPositions.find(
         position => position.i === 4 && position.j === 4 && position.mode === 1
       ) &&
-      (((field.i === 3 || field.i === 5) && field.j === 2) ||
-        ((field.i === 3 || field.i === 5) && field.j === 6))
+      (((field.i === 2 || field.i === 6) && field.j === 3) ||
+        ((field.i === 2 || field.i === 6) && field.j === 5))
     ) {
       return 200;
     }
@@ -38,16 +39,16 @@ export default class AI {
 
     //VALUE FOR FIELD FROM WHICH NEXT MOVE COULD BE MADE TO CENTER
     if (
-      ((field.i === 3 || field.i === 5) && field.j === 2) ||
-      ((field.i === 3 || field.i === 5) && field.j === 6)
+      ((field.i === 2 || field.i === 6) && field.j === 3) ||
+      ((field.i === 2 || field.i === 6) && field.j === 5)
     ) {
       value += 25;
       //IF THERE'S OPPONENT THERE
       if (
         pawnPositions.find(
           position =>
-            (((field.i === 3 || field.i === 5) && field.j === 2) ||
-              ((field.i === 3 || field.i === 5) && field.j === 6)) &&
+            (((field.i === 2 || field.i === 6) && field.j === 3) ||
+              ((field.i === 2 || field.i === 6) && field.j === 5)) &&
             position.mode === 0
         )
       ) {
@@ -55,13 +56,13 @@ export default class AI {
       }
       return value;
     }
-    if ([2, 4, 6].includes(field.i) && [0, 4, 8].includes(field.j)) {
+    if ([2, 4, 6].includes(field.j) && [0, 4, 8].includes(field.i)) {
       value += 12;
       if (
         pawnPositions.find(
           position =>
-            [2, 4, 6].includes(position.i) &&
-            [0, 4, 8].includes(position.j) &&
+            [2, 4, 6].includes(position.j) &&
+            [0, 4, 8].includes(position.i) &&
             position.mode === 0
         )
       ) {
@@ -69,13 +70,13 @@ export default class AI {
       }
       return value;
     }
-    if ([1, 7].includes(field.i) && [2, 6].includes(field.j)) {
+    if ([1, 7].includes(field.j) && [2, 6].includes(field.i)) {
       value += 6;
       if (
         pawnPositions.find(
           position =>
-            [0, 8].includes(position.i) &&
             [0, 8].includes(position.j) &&
+            [0, 8].includes(position.i) &&
             position.mode === 0
         )
       ) {
@@ -83,13 +84,13 @@ export default class AI {
       }
       return value;
     }
-    if ([0, 8].includes(field.i) && [0, 8].includes(field.j)) {
+    if ([0, 8].includes(field.j) && [0, 8].includes(field.i)) {
       value += 3;
       if (
         pawnPositions.find(
           position =>
-            [0, 8].includes(position.i) &&
             [0, 8].includes(position.j) &&
+            [0, 8].includes(position.i) &&
             position.mode === 0
         )
       ) {
@@ -105,57 +106,52 @@ export default class AI {
   //TODO: IF Center then most important is to leave the field
 
   static makeDecision(fieldsWithValues) {
-    return AI.minimax(0, 0, true, fieldsWithValues, 2, 200);
+    const decision = AI.minimax(
+      0,
+      0,
+      true,
+      fieldsWithValues,
+      { value: Number.NEGATIVE_INFINITY },
+      { value: Number.POSITIVE_INFINITY }
+    );
+    return decision;
   }
   // values {from, to:[{},{}]}
-  static minimax(
-    depth,
-    nodeIndex,
-    maximizingPlayer,
-    possibilities,
-    alpha,
-    beta
-  ) {
-    const MIN = 2;
-    const MAX = 200;
-    console.log(possibilities[nodeIndex]);
-    if (depth === 4) return possibilities[nodeIndex];
+  static minimax(depth, nodeIndex, maximizingPlayer, values, alpha, beta) {
+    if (depth === 2) return values[nodeIndex];
 
     if (maximizingPlayer) {
-      let best = MIN;
-      for (let i = 0; i <= 2; i++) {
+      let best = { value: Number.NEGATIVE_INFINITY };
+      for (let i = 0; i < 2; i++) {
         let val = AI.minimax(
           depth + 1,
           nodeIndex * 2 + i,
           false,
-          possibilities,
+          values,
           alpha,
           beta
         );
-        if (Math.max(best, val.value) === val.value) best = val;
-        else best = best;
-        if (Math.max(alpha, best) === best.value) alpha = best;
-        else alpha = alpha;
-
-        if (beta <= alpha) break;
+        best = Math.max(best.value, val.value) === best.value ? best : val;
+        alpha = Math.max(alpha.value, best.value) === best.value ? best : alpha;
+        if (beta.value <= alpha.value) break;
       }
-      return possibilities[nodeIndex];
+      return best;
     } else {
-      let best = MAX;
-      for (let i = 0; i <= 2; i++) {
+      let best = { value: Number.POSITIVE_INFINITY };
+      for (let i = 0; i < 2; i++) {
         let val = AI.minimax(
           depth + 1,
           nodeIndex * 2 + i,
           true,
-          possibilities,
+          values,
           alpha,
           beta
         );
-        best = Math.min(best, val.value);
-        beta = Math.min(beta, best);
-        if (beta <= alpha) break;
+        best = Math.min(best.value, val.value) === best.value ? best : val;
+        beta = Math.min(beta.value, best.value) === best.value ? best : beta;
+        if (beta.value <= alpha.value) break;
       }
-      return possibilities[nodeIndex];
+      return best;
     }
   }
 }
