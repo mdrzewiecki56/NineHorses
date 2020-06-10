@@ -1,5 +1,8 @@
+import * as scores from "../FieldScores";
+
 export default class AI {
   static calculateValue(field, pawnPositions) {
+    const coordsToCheck = { i: field.i, j: field.j };
     let value = 0;
     // SET VALUES TO ZERO FOR FIELDS WHERE ALREADY IS A BLACK PAWN
     if (
@@ -17,8 +20,9 @@ export default class AI {
       pawnPositions.find(
         position => position.i === 4 && position.j === 4 && position.mode === 1
       ) &&
-      (((field.i === 2 || field.i === 6) && field.j === 3) ||
-        ((field.i === 2 || field.i === 6) && field.j === 5))
+      scores.twentyFive.find(
+        coords => coords.i === coordsToCheck.i && coords.j === coordsToCheck.j
+      )
     ) {
       return 200;
     }
@@ -39,59 +43,72 @@ export default class AI {
 
     //VALUE FOR FIELD FROM WHICH NEXT MOVE COULD BE MADE TO CENTER
     if (
-      ((field.i === 2 || field.i === 6) && field.j === 3) ||
-      ((field.i === 2 || field.i === 6) && field.j === 5)
+      scores.twentyFive.find(
+        coords => coords.i === coordsToCheck.i && coords.j === coordsToCheck.j
+      )
     ) {
       value += 25;
       //IF THERE'S OPPONENT THERE
       if (
         pawnPositions.find(
           position =>
-            (((field.i === 2 || field.i === 6) && field.j === 3) ||
-              ((field.i === 2 || field.i === 6) && field.j === 5)) &&
-            position.mode === 0
+            scores.twentyFive.find(
+              coords => coords.i === position.i && coords.j === position.j
+            ) && position.mode === 0
         )
       ) {
         value += 12;
       }
       return value;
     }
-    if ([2, 4, 6].includes(field.j) && [0, 4, 8].includes(field.i)) {
-      value += 12;
+    if (
+      scores.fifteen.find(
+        coords => coords.i === coordsToCheck.i && coords.j === coordsToCheck.j
+      )
+    ) {
+      value += 15;
       if (
         pawnPositions.find(
           position =>
-            [2, 4, 6].includes(position.j) &&
-            [0, 4, 8].includes(position.i) &&
-            position.mode === 0
+            scores.fifteen.find(
+              coords => coords.i === position.i && coords.j === position.j
+            ) && position.mode === 0
         )
       ) {
-        value += 6;
+        value += 7;
       }
       return value;
     }
-    if ([1, 7].includes(field.j) && [2, 6].includes(field.i)) {
+    if (
+      scores.seven.find(
+        coords => coords.i === coordsToCheck.i && coords.j === coordsToCheck.j
+      )
+    ) {
       value += 6;
       if (
         pawnPositions.find(
           position =>
-            [0, 8].includes(position.j) &&
-            [0, 8].includes(position.i) &&
-            position.mode === 0
+            scores.seven.find(
+              coords => coords.i === position.i && coords.j === position.j
+            ) && position.mode === 0
         )
       ) {
         value += 3;
       }
       return value;
     }
-    if ([0, 8].includes(field.j) && [0, 8].includes(field.i)) {
+    if (
+      scores.three.find(
+        coords => coords.i === coordsToCheck.i && coords.j === coordsToCheck.j
+      )
+    ) {
       value += 3;
       if (
         pawnPositions.find(
           position =>
-            [0, 8].includes(position.j) &&
-            [0, 8].includes(position.i) &&
-            position.mode === 0
+            scores.three.find(
+              coords => coords.i === position.i && coords.j === position.j
+            ) && position.mode === 0
         )
       ) {
         value += 1;

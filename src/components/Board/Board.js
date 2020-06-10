@@ -223,10 +223,10 @@ function Board(props) {
       .flat(1);
     //MAKE ALPHA-BETA MINMAX DECISION (AI.makeDecision)
     console.log(fieldsWithValues);
-    const decision = AI.makeDecision(fieldsWithValues);
+    let decision = AI.makeDecision(fieldsWithValues);
+    decision = _.maxBy(fieldsWithValues, "value");
     console.log(decision);
     setSelectedPawn(new Horse(decision.from.i, decision.from.j, 1));
-    console.log(_.maxBy(fieldsWithValues, "value"));
     return { i: decision.i, j: decision.j };
   };
 
