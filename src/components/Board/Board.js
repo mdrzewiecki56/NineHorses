@@ -5,6 +5,7 @@ import Horse from "../../Horse/Horse";
 import AI from "../../AI/AI";
 import * as _ from "lodash";
 import "./Board.scss";
+import AI_JK from "../../AI/AI_JK";
 
 const CUR_PLAYER_W = 0;
 const CUR_PLAYER_B = 1;
@@ -188,6 +189,9 @@ function Board(props) {
   ));
 
   const AITurn = () => {
+    var ai = new AI_JK();
+    ai.getBestMove(pawnPositions);
+
     //FOR EACH BLACK PAWN GET POSSIBLE FIELDS (Horse.getMOVES(pawnPosition)) THAT PAWN COULD BE MOVED TO [ARRAY OF {i,j}]
     const possibilities = pawnPositions
       .filter(pawn => pawn.mode === CUR_PLAYER_B)
@@ -208,7 +212,6 @@ function Board(props) {
       };
     });
 
-    console.log(possibilitiesOfPossibilities);
     //CALCULATE VALUE FOR EVERY POSSIBLE FIELD (AI.calculateValue)
     const fieldsWithValues = possibilities
       .map(possibility =>
@@ -222,12 +225,11 @@ function Board(props) {
       )
       .flat(1);
     //MAKE ALPHA-BETA MINMAX DECISION (AI.makeDecision)
-    console.log(fieldsWithValues);
     const decision = AI.makeDecision(fieldsWithValues);
-    console.log(decision);
-    setSelectedPawn(new Horse(decision.from.i, decision.from.j, 1));
-    console.log(_.maxBy(fieldsWithValues, "value"));
-    return { i: decision.i, j: decision.j };
+    const jkDecision = ai.getBestMove(pawnPositions);
+    
+    setSelectedPawn(new Horse(jkDecision.from.i, jkDecision.from.j, 1));
+    return { i: jkDecision.move.i, j: jkDecision.move.j };
   };
 
   const [aiMove, setAiMove] = useState(null);
